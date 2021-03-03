@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 
 const CapsuleSchema = new mongoose.Schema({
-    serial: String,
+    serial: {type: String, unique: true, required: true},
     type: String,
     waterLandings: Number
 })

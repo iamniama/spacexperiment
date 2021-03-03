@@ -10,7 +10,7 @@ mongoose.connect('mongodb://localhost/gaSpaceX', {
 const db = mongoose.connection
 
 db.once('open', ()=>{
-    console.log(`Connected to MongoDB at ${db.host}: ${db/port}`)
+    console.log(`Connected to MongoDB at ${db.host}`)
 })
 
 db.on('error', (error)=>{
