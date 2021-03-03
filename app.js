@@ -44,6 +44,50 @@ app.get('/fetch-capsules-local/:serial', async(req, res)=>{
     res.send(capsuleData)
 })
 
+app.get('/fetch-launches-remote', async (req, res) => {
+    const launchData = await axios.get('https://api.spacexdata.com/v4/launches')
+    let returnJSON = []
+    for (let data of launchData.data) {
+        returnJSON.push(
+            {
+                name: data.name,
+                flight_number: data.flight_number,
+                date_local: data.date_local
+            }
+        )
+    }
+    const launches = await db.Launch.insertMany(returnJSON)
+    res.json(launches)
+})
+
+app.get('/fetch-launches-local', async(req,res)=>{
+    const launchData = await db.Launch.find({})
+    res.send(launchData)
+})
+
+app.get('/fetch-landpads-local', async(req,res)=>{
+    const padData = await db.Landpad.find({})
+    res.send(padData)
+})
+
+
+app.get('/fetch-landpads-remote', async (req, res) => {
+    const padData = await axios.get('https://api.spacexdata.com/v4/landpads')
+    let returnJSON = []
+    for (let data of padData.data) {
+        returnJSON.push(
+            {
+            name: data.name,
+            full_name: data.full_name,
+            location: data.locality,
+            details: data.details
+            }
+        )
+    }
+    const landpads = await db.Landpad.insertMany(returnJSON)
+    res.json(landpads)
+})
+
 
 
 const server = app.listen(PORT, ()=>{
