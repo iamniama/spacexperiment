@@ -12,7 +12,7 @@ app.get('/', (req, res)=>{
     res.send("Welcome to my Space-X API implementation")
 })
 
-app.get('/fetch-capsules-remote', async(req, res)=>{
+app.get('/v1/fetch-capsules-remote', async(req, res)=>{
     let capsuleData = []
     const response = await axios.get('https://api.spacexdata.com/v4/capsules')
     for (let capsule of response.data){
@@ -28,23 +28,23 @@ app.get('/fetch-capsules-remote', async(req, res)=>{
 
 })
 
-app.get('/fetch-capsules-remote/:serial', async(req, res)=>{
+app.get('/v1/fetch-capsules-remote/:serial', async(req, res)=>{
     let capsuleData = []
     const response = await axios.post('https://api.spacexdata.com/v4/capsules/query', {query: {serial: req.params.serial}, options: {}})
     res.send(response.data)
 })
 
-app.get('/fetch-capsules-local', async(req, res)=>{
+app.get('/v1/fetch-capsules-local', async(req, res)=>{
     const capsuleData = await db.Capsule.find({})
     res.send(capsuleData)
 })
 
-app.get('/fetch-capsules-local/:serial', async(req, res)=>{
+app.get('/v1/fetch-capsules-local/:serial', async(req, res)=>{
     const capsuleData = await db.Capsule.findOne({serial: req.params.serial})
     res.send(capsuleData)
 })
 
-app.get('/fetch-launches-remote', async (req, res) => {
+app.get('/v1/fetch-launches-remote', async (req, res) => {
     const launchData = await axios.get('https://api.spacexdata.com/v4/launches')
     let returnJSON = []
     for (let data of launchData.data) {
@@ -60,18 +60,18 @@ app.get('/fetch-launches-remote', async (req, res) => {
     res.json(launches)
 })
 
-app.get('/fetch-launches-local', async(req,res)=>{
+app.get('/v1/fetch-launches-local', async(req,res)=>{
     const launchData = await db.Launch.find({})
     res.send(launchData)
 })
 
-app.get('/fetch-landpads-local', async(req,res)=>{
+app.get('/v1/fetch-landpads-local', async(req,res)=>{
     const padData = await db.Landpad.find({})
     res.send(padData)
 })
 
 
-app.get('/fetch-landpads-remote', async (req, res) => {
+app.get('/v1/fetch-landpads-remote', async (req, res) => {
     const padData = await axios.get('https://api.spacexdata.com/v4/landpads')
     let returnJSON = []
     for (let data of padData.data) {
@@ -86,6 +86,31 @@ app.get('/fetch-landpads-remote', async (req, res) => {
     }
     const landpads = await db.Landpad.insertMany(returnJSON)
     res.json(landpads)
+})
+
+app.get('/v1/fetch-ships-remote', async(req,res)=>{
+    const shipData = await axios.get('https://api.spacexdata.com/v4/ships')
+    let shipJSON = []
+    for (let data of shipData.data){
+        shipJSON.push(
+            {
+                name: data.name,
+                type: data.type,
+                roles: [...data.roles],
+                home_port: data.home_port,
+                year_built: data.year_built,
+                image: data.image,
+                link: data.link
+            }
+        )
+    }
+    const ships = await db.Ship.insertMany(shipJSON)
+    res.json(ships)
+})
+
+app.get('/v1/fetch-ships-local', async(req,res)=>{
+    const shipData = await db.Ship.find({})
+    res.send(shipData)
 })
 
 

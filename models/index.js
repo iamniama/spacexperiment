@@ -22,5 +22,6 @@ db.on('error', (error)=>{
 module.exports = {
     Capsule: require('./capsule'),
     Landpad: require('./pad'),
-    Launch: require('./launch')
+    Launch: require('./launch'),
+    Ship: require('./ship')
 }
