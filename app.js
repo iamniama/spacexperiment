@@ -100,7 +100,8 @@ app.get('/v1/fetch-ships-remote', async(req,res)=>{
                 home_port: data.home_port,
                 year_built: data.year_built,
                 image: data.image,
-                link: data.link
+                link: data.link,
+                active: data.active
             }
         )
     }
@@ -108,9 +109,14 @@ app.get('/v1/fetch-ships-remote', async(req,res)=>{
     res.json(ships)
 })
 
-app.get('/v1/fetch-active-ships', async(req,res)=>{
+app.get('/v1/fetch-active-ships-remote', async(req,res)=>{
     const shipData = await axios.post('https://api.spacexdata.com/v4/ships/query', {query: {active: true}, options: {}})
     res.json(shipData.data)
+})
+
+app.get('/v1/fetch-active-ships-local', async(req,res)=>{
+    const shipData = await db.Ship.find({active:true})
+    res.json(shipData)
 })
 
 app.get('/v1/fetch-ships-local', async(req,res)=>{

@@ -8,7 +8,8 @@ const ShipSchema = new mongoose.Schema({
     home_port: String,
     year_built: Number,
     image: String,
-    link: String
+    link: String,
+    active: Boolean
 })
 
 const Ship = mongoose.model('Ship', ShipSchema)
